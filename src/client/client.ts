@@ -1,6 +1,6 @@
 import { Client } from "@threefold/rmb_direct_client";
 
-export async function connectClient() {
+export async function connectClient(): Promise<Client | undefined> {
   // create client
   const client = new Client(
     "wss://tfchain.dev.grid.tf/ws",
@@ -8,52 +8,31 @@ export async function connectClient() {
     "",
     "test_client",
     "sr25519",
-    5
+    10
   );
-  console.log("client: ", client);
 
   try {
     await client.connect();
-    return client;
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);
+    return undefined;
   }
-  //   finally {
-  //         client.disconnect();
-  //       }
+  return client;
 }
 
 export async function requestRmb(
   rmbClient: Client,
   command: string,
-  payload: any
+  payload: any,
+  destTwinIds: number[] = [17]
 ): Promise<any> {
-  const requestID = await rmbClient.send(command, payload, 17, 5);
-  // get response
+  const requestID = await rmbClient.send(
+    command,
+    payload,
+    destTwinIds[0],
+    20 / 60,
+    5
+  );
   const response = await rmbClient.read(requestID);
-  // print response
-  console.log({ response });
   return response;
 }
-
-// async request(destTwinIds: number[], cmd: string, payload: string, expiration = 20, retries = 1) {
-//   let result;
-//   try {
-//     const requestId = await this.client.send(cmd, payload, destTwinIds[0], expiration / 60, retries);
-//     result = await this.client.read(requestId);
-//   } catch (e) {
-//     if (e instanceof BaseError) {
-//       e.message = formatErrorMessage(
-//         `Failed to send request to twinId ${destTwinIds} with command: ${cmd}, payload: ${payload}`,
-//         e,
-//       );
-//       throw e;
-//     }
-//     throw new RMBError(
-//       `Failed to send request to twinId ${destTwinIds} with command: ${cmd}, payload: ${payload} due to ${e}`,
-//     );
-//   }
-//   return result;
-// }
-
-// main().then(() => console.log("Done."));

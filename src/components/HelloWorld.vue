@@ -1,46 +1,84 @@
 <script setup lang="ts">
-defineProps<{
-  msg: string;
-}>();
 import { Client } from "@threefold/rmb_direct_client";
 import { onMounted, ref } from "vue";
 import { connectClient, requestRmb } from "../client/client";
+import { useRmb } from "../stores/client";
 
 let client: Client | undefined;
+const rmbStore = useRmb();
+const response = ref("");
+const dialogVisible = ref(false);
 
 onMounted(async () => {
   try {
+    await rmbStore.set();
+    console.log("clientStore", rmbStore.client);
     client = await connectClient();
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);
   }
 });
+
 const formData = ref({
   command: "",
   payload: "",
+  nodeId: 17,
 });
-const handleSubmit = () => {
+
+const handleSubmit = async () => {
   console.log("Form Submitted:", formData.value);
 
   if (!client) return;
-  requestRmb(client, formData.value.command, formData.value.payload);
 
-  // Perform your action (e.g., API call)
-  // alert(`Submitted: ${JSON.stringify(formData.value)}`);
+  if (rmbStore.client) {
+    response.value = await requestRmb(
+      rmbStore.client,
+      formData.value.command,
+      formData.value.payload[formData.value.nodeId]
+    );
+  }
+
+  // Open the dialog after submission
+  dialogVisible.value = true;
+};
+</script>
+<script lang="ts">
+import DialogComponent from "./dialoge.vue"; // Ensure correct import
+
+export default {
+  name: "HelloWorld",
+  components: { DialogComponent },
 };
 </script>
 
 <template>
-  <v-container class="fill-height">
-    <v-responsive class="align-center fill-height mx-auto" max-width="900">
-      <div class="text-center">
+  <DialogComponent v-model:dialogVisible="dialogVisible" :response="response" />
+
+  <v-container class="d-flex flex-column justify-center align-center">
+    <v-responsive class="mx-auto">
+      <!-- <div class="text-center">
         <h1 class="text-h2 font-weight-bold" color="primary">
           Rmb Client Task
         </h1>
-      </div>
+      </div> -->
 
-      <div class="py-4" />
       <v-row>
+        <v-col cols="12">
+          <v-card
+            class="py-4"
+            color="surface-variant"
+            rounded="lg"
+            variant="outlined"
+          >
+            <v-text-field
+              class="pa-4"
+              v-model="formData.nodeId"
+              hide-details="auto"
+              label="Node Id"
+              clearable
+            ></v-text-field>
+          </v-card>
+        </v-col>
         <v-col cols="12">
           <v-card
             class="py-4"
@@ -75,7 +113,6 @@ const handleSubmit = () => {
           </v-card>
         </v-col>
 
-        <!-- Submit Button -->
         <v-col cols="12" class="text-center">
           <v-btn color="primary" class="mt-4" @click="handleSubmit">
             Submit
