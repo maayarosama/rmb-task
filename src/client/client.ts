@@ -1,11 +1,10 @@
 import { Client } from "@threefold/rmb_direct_client";
 
 export async function connectClient(): Promise<Client | undefined> {
-  // create client
   const client = new Client(
     "wss://tfchain.dev.grid.tf/ws",
     `wss://relay.dev.grid.tf/`,
-    "",
+    "<mnemonic>",
     "test_client",
     "sr25519",
     10
@@ -22,17 +21,24 @@ export async function connectClient(): Promise<Client | undefined> {
 
 export async function requestRmb(
   rmbClient: Client,
-  command: string,
-  payload: any,
-  destTwinIds: number[] = [17]
-): Promise<any> {
-  const requestID = await rmbClient.send(
-    command,
-    payload,
-    destTwinIds[0],
-    20 / 60,
-    5
-  );
-  const response = await rmbClient.read(requestID);
-  return response;
+  destTwinIds: number[],
+  cmd: string,
+  payload: string,
+  expiration = 20,
+  retries = 1
+) {
+  let result;
+  try {
+    const requestId = await rmbClient.send(
+      cmd,
+      payload,
+      destTwinIds[0],
+      expiration / 60,
+      retries
+    );
+    result = await rmbClient.read(requestId);
+  } catch (e) {
+    console.error(e);
+  }
+  return result;
 }
