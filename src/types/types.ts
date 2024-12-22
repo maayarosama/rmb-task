@@ -6,3 +6,8 @@ export interface Node {
   twinId: number;
   nodeId: number;
 }
+
+export interface Profile {
+  mnemonic: string;
+  network: string;
+}

@@ -1,6 +1,11 @@
 <template>
-  <DialogComponent v-model:dialogVisible="dialogVisible" :response="response" />
-
+  <RmbDialog v-model:modelValue="dialogVisible" :title="'Response'">
+    <template #actions>
+      <pre>
+          <code class="hljs json dark-bg" v-html="response"></code>
+        </pre>
+    </template>
+  </RmbDialog>
   <v-container class="d-flex flex-column justify-center align-center">
     <v-responsive class="mx-auto">
       <v-row>
@@ -97,6 +102,7 @@ const handleSubmit = async () => {
         formData.value.payload
       );
     }
+    response.value = JSON.stringify(response.value, null, 2);
 
     dialogVisible.value = true;
   } catch (err) {
@@ -107,11 +113,11 @@ const handleSubmit = async () => {
 };
 </script>
 <script lang="ts">
-import DialogComponent from "./dialoge.vue";
+import RmbDialog from "./dialoge.vue";
 
 export default {
   name: "RequestForm",
-  components: { DialogComponent },
+  components: { RmbDialog },
 };
 </script>
 <style scoped></style>

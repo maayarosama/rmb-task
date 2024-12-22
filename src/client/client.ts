@@ -1,5 +1,7 @@
 import { Client } from "@threefold/rmb_direct_client";
-
+// export async function connectClient(
+//   mnemonic: string
+// )
 export async function connectClient(): Promise<Client | undefined> {
   const client = new Client(
     "wss://tfchain.dev.grid.tf/ws",

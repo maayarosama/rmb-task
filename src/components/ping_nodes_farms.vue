@@ -1,5 +1,13 @@
 <template>
-  <!-- <DialogComponent v-model:dialogVisible="dialogVisible" :response="response" /> -->
+  <RmbDialog v-model:modelValue="dialogVisible" :title="'Nodes Summary'">
+    <template #actions>
+      <NodeSummary
+        :totalNodes="nodes.length"
+        :pingableNodes="pingableNodes.length"
+        :failedNodes="failedNodes"
+      />
+    </template>
+  </RmbDialog>
   <v-container class="d-flex flex-column justify-center align-center">
     <v-responsive class="mx-auto">
       <v-btn
@@ -61,6 +69,8 @@ const nodes = ref<Node[]>([]);
 const handlePing = async () => {
   try {
     isLoading.value = true;
+    failedNodes.value = [];
+    pingableNodes.value = [];
     nodes.value = await getFarmNodes(farmId.value);
     console.log("nodes twin ids:", nodes);
     for (const node of nodes.value) {
@@ -73,6 +83,7 @@ const handlePing = async () => {
     }
     console.log("failed: " + failedNodes.value);
     console.log("passed: " + pingableNodes.value);
+    dialogVisible.value = true;
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);
   } finally {
@@ -81,13 +92,13 @@ const handlePing = async () => {
 };
 </script>
 <script lang="ts">
-import DialogComponent from "./dialoge.vue";
 import { getFarmNodes, pingNode } from "@/utils/nodes";
 import { type Node } from "@/types/types";
-
+import NodeSummary from "./nodes_summary.vue";
+import RmbDialog from "./dialoge.vue";
 export default {
   name: "PingFarmNodes",
-  components: { DialogComponent },
+  components: { NodeSummary, RmbDialog },
 };
 </script>
 <style scoped></style>

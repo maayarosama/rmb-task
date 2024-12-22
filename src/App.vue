@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import HomeView from "./views/HomeView.vue";
-
+import NavBar from "./components/navbar.vue";
+import { useProfile } from "./stores/profile";
+const profileStore = useProfile();
 import { onMounted } from "vue";
 import { useRmb } from "./stores/client";
 const rmbStore = useRmb();
@@ -16,10 +18,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-sheet color="primary" class="w-100 d-flex align-center justify-center">
-    <p class="my-2 font-weight-bold text-h6">Rmb Executer</p>
-  </v-sheet>
-  <div class="pa-5"><HomeView /></div>
+  <v-app>
+    <NavBar />
+    <div class="pa-5" v-if="profileStore.profile"><HomeView /></div>
+    <div v-else class="ma-6">
+      <v-alert type="info" variant="tonal" class="my-6">
+        <p>Please enter your mnemonics</p>
+      </v-alert>
+    </div>
+  </v-app>
 </template>
 
 <style scoped></style>
