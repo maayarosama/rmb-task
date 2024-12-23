@@ -1,6 +1,7 @@
 import type { Profile } from "@/types/types";
 import { defineStore } from "pinia";
 import { useRmb } from "./client";
+import getDefaultUrls from "@/utils/urls";
 
 export interface State {
   profile: Profile | null;
@@ -12,11 +13,9 @@ const useProfile = defineStore("profile", {
   },
 
   actions: {
-    set(profile: Profile | null) {
+    set(profile: Profile) {
       this.profile = profile;
-      // if (this.profile) {
-      //   useRmb().set(this.profile?.mnemonic);
-      // }
+      getDefaultUrls(this.profile.network);
     },
 
     updateNetwork(network: string) {

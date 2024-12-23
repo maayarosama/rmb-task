@@ -25,7 +25,7 @@ export async function pingNode(
 }
 
 export async function getNodes(url = ""): Promise<Node[]> {
-  const r = url || "https://gridproxy.dev.grid.tf/";
+  const r = url || window.env.GRIDPROXY_URL;
 
   return axios
     .get<Node[]>(urlJoin(r, `/nodes`))
@@ -42,7 +42,7 @@ export async function getNodes(url = ""): Promise<Node[]> {
 }
 
 export async function getFarmNodes(farmId: number, url = ""): Promise<Node[]> {
-  const r = url || "https://gridproxy.dev.grid.tf/";
+  const r = url || window.env.GRIDPROXY_URL;
   return axios
     .get<Node[]>(urlJoin(r, `/nodes?farm_ids=${[farmId]}`))
     .then((response: AxiosResponse<Node[]>) => {

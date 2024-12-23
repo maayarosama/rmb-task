@@ -14,6 +14,8 @@
             hide-details="auto"
             type="string"
             label="Mnemonic"
+            :disabled="isLogged"
+            :rules="isMnemonic"
             clearable
           ></v-text-field>
         </v-card>
@@ -31,20 +33,22 @@
             :items="networks"
             item-value="abbr"
             label="Network"
+            :disabled="isLogged"
             return-object
             single-line
           ></v-select>
         </v-card>
       </v-col>
 
-      <v-col cols="12" class="text-center">
+      <v-col cols="12" class="text-center" v-if="!isLogged">
         <v-btn
           color="primary"
           class="mt-4"
           @click="handleSubmit"
           :loading="isLoading"
+          :disabled="!valid || isLoading"
         >
-          Submit
+          Login
         </v-btn>
       </v-col>
     </v-row>
@@ -52,28 +56,35 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { requestRmb } from "../client/client";
+import { computed, ref } from "vue";
 import { useRmb } from "../stores/client";
+import { isMnemonic } from "../utils/validators";
 
+const emit = defineEmits(["close"]);
 const rmbStore = useRmb();
-const mnemonic = ref("");
-const selectedNetwork = ref("");
 const networks = ref(["dev", "qa", "main", "test"]);
+const profileStore = useProfile();
 const profile = ref<Profile>({
-  mnemonic: "",
-  network: networks.value[0],
+  mnemonic: profileStore.profile?.mnemonic || "",
+  network: profileStore.profile?.network || networks.value[0],
 });
 const valid = ref(false);
 
-const dialogVisible = ref(false);
 const isLoading = ref(false);
-const profileStore = useProfile();
+const isLogged = computed(() => {
+  return (
+    profileStore.profile &&
+    Object.keys(profileStore.profile).length > 0 &&
+    rmbStore.client
+  );
+});
 
 const handleSubmit = async () => {
   try {
     isLoading.value = true;
     await profileStore.set(profile.value);
+    await rmbStore.set(profileStore.profile?.mnemonic);
+    emit("close");
   } catch (err) {
     console.error(`Couldn't load profile: ${err}`);
   } finally {

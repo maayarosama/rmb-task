@@ -2,11 +2,13 @@ import { Client } from "@threefold/rmb_direct_client";
 // export async function connectClient(
 //   mnemonic: string
 // )
-export async function connectClient(): Promise<Client | undefined> {
+export async function connectClient(
+  mnemonic: string
+): Promise<Client | undefined> {
   const client = new Client(
-    "wss://tfchain.dev.grid.tf/ws",
-    `wss://relay.dev.grid.tf/`,
-    "<mnemonic>",
+    window.env.TFCHAIN_URL,
+    window.env.RELAY_URL,
+    mnemonic,
     "test_client",
     "sr25519",
     10
@@ -43,4 +45,8 @@ export async function requestRmb(
     console.error(e);
   }
   return result;
+}
+
+export async function disconnectClient(rmbClient: Client) {
+  return rmbClient.disconnect();
 }

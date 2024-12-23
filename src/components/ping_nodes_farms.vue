@@ -19,47 +19,54 @@
       >
     </v-responsive>
   </v-container>
-  <v-container v-if="isFarm" class="justify-center align-center">
-    <v-row>
-      <v-col cols="9">
-        <v-card
-          class="py-1"
-          color="surface-variant"
-          rounded="lg"
-          variant="outlined"
-        >
-          <v-text-field
-            class="py-1 px-2"
-            v-model="farmId"
-            hide-details="auto"
-            label="Farm Id"
-            clearable
-          ></v-text-field>
-        </v-card>
-      </v-col>
+  <v-form v-model="valid" class="mx-auto">
+    <v-container v-if="isFarm" class="justify-center align-center">
+      <v-row>
+        <v-col cols="9">
+          <v-card
+            class="py-1"
+            color="surface-variant"
+            rounded="lg"
+            variant="outlined"
+          >
+            <v-text-field
+              class="py-1 px-2"
+              v-model="farmId"
+              type="number"
+              hide-details="auto"
+              label="Farm Id"
+              :rules="isNumber"
+              clearable
+            ></v-text-field>
+          </v-card>
+        </v-col>
 
-      <v-col cols="3" class="text-center">
-        <v-btn
-          color="primary"
-          class="mt-4"
-          @click="handlePing"
-          :loading="isLoading"
-        >
-          Submit
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+        <v-col cols="3" class="text-center">
+          <v-btn
+            color="primary"
+            class="mt-4"
+            @click="handlePing"
+            :loading="isLoading"
+            :disabled="!valid"
+          >
+            Ping
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRmb } from "../stores/client";
+import { isNumber } from "../utils/validators";
 
 const rmbStore = useRmb();
 const dialogVisible = ref(false);
 const isLoading = ref(false);
 const isFarm = ref(false);
+const valid = ref(false);
 const farmId = ref();
 
 const failedNodes = ref<Node[]>([]);
@@ -72,17 +79,13 @@ const handlePing = async () => {
     failedNodes.value = [];
     pingableNodes.value = [];
     nodes.value = await getFarmNodes(farmId.value);
-    console.log("nodes twin ids:", nodes);
     for (const node of nodes.value) {
-      console.log("pinging node:", node.twinId);
       if (await pingNode(rmbStore.client, node.twinId)) {
         pingableNodes.value.push(node);
       } else {
         failedNodes.value.push(node);
       }
     }
-    console.log("failed: " + failedNodes.value);
-    console.log("passed: " + pingableNodes.value);
     dialogVisible.value = true;
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);

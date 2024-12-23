@@ -1,8 +1,6 @@
 import type { Client } from "@threefold/rmb_direct_client";
 import { defineStore } from "pinia";
-import { connectClient } from "../client/client";
-import { useProfile } from "./profile";
-import type { Profile } from "@/types/types";
+import { connectClient, disconnectClient } from "../client/client";
 
 export interface IClient {
   client: Client | undefined;
@@ -14,10 +12,16 @@ const useRmb = defineStore("rmb-client", {
   },
 
   actions: {
-    // async set(mnemonic: string | null) {
-
-    async set() {
-      this.client = await connectClient();
+    async set(mnemonic: string | undefined) {
+      if (mnemonic) {
+        this.client = await connectClient(mnemonic);
+      }
+    },
+    async clear() {
+      if (this.client) {
+        await disconnectClient(this.client);
+        this.client = undefined;
+      }
     },
   },
 });

@@ -48,8 +48,6 @@ const handlePing = async () => {
         failedNodes.value.push(node);
       }
     }
-    console.log("failed: " + failedNodes.value);
-    console.log("passed: " + pingableNodes.value);
     dialogVisible.value = true;
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);

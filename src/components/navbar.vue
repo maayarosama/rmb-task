@@ -10,9 +10,9 @@
       </v-btn>
     </v-app-bar>
 
-    <RmbDialog v-model:modelValue="dialogVisible" :title="'Response'">
+    <RmbDialog v-model:modelValue="dialogVisible" :title="'Rmb Executor'">
       <template #actions>
-        <ProfileForm />
+        <ProfileForm @close="dialogVisible = false" />
       </template>
     </RmbDialog>
   </v-container>

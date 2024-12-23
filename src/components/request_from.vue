@@ -6,77 +6,83 @@
         </pre>
     </template>
   </RmbDialog>
-  <v-container class="d-flex flex-column justify-center align-center">
-    <v-responsive class="mx-auto">
-      <v-row>
-        <v-col cols="12">
-          <v-card
-            class="py-4"
-            color="surface-variant"
-            rounded="lg"
-            variant="outlined"
-          >
-            <v-text-field
-              class="pa-4"
-              v-model="formData.nodeId"
-              hide-details="auto"
-              type="number"
-              label="Node Twin Id"
-              clearable
-            ></v-text-field>
-          </v-card>
-        </v-col>
-        <v-col cols="12">
-          <v-card
-            class="py-4"
-            color="surface-variant"
-            rounded="lg"
-            variant="outlined"
-          >
-            <v-text-field
-              class="pa-4"
-              v-model="formData.command"
-              hide-details="auto"
-              label="Rmb command"
-              clearable
-            ></v-text-field>
-          </v-card>
-        </v-col>
+  <v-form v-model="valid" class="mx-auto">
+    <v-container class="d-flex flex-column justify-center align-center">
+      <v-responsive class="mx-auto">
+        <v-row>
+          <v-col cols="12">
+            <v-card
+              class="py-4"
+              color="surface-variant"
+              rounded="lg"
+              variant="outlined"
+            >
+              <v-text-field
+                class="pa-4"
+                v-model="formData.nodeId"
+                hide-details="auto"
+                type="number"
+                label="Node Twin Id"
+                :rules="isNumber"
+                clearable
+              ></v-text-field>
+            </v-card>
+          </v-col>
+          <v-col cols="12">
+            <v-card
+              class="py-4"
+              color="surface-variant"
+              rounded="lg"
+              variant="outlined"
+            >
+              <v-text-field
+                class="pa-4"
+                v-model="formData.command"
+                hide-details="auto"
+                label="Rmb command"
+                :rules="isCommand"
+                clearable
+              ></v-text-field>
+            </v-card>
+          </v-col>
 
-        <v-col cols="12">
-          <v-card
-            class="py-4"
-            color="surface-variant"
-            rounded="lg"
-            variant="outlined"
-          >
-            <v-textarea
-              class="pa-4"
-              v-model="formData.payload"
-              hide-details="auto"
-              label="Payload"
-              clearable
-            ></v-textarea>
-          </v-card>
-        </v-col>
+          <v-col cols="12">
+            <v-card
+              class="py-4"
+              color="surface-variant"
+              rounded="lg"
+              variant="outlined"
+            >
+              <v-textarea
+                class="pa-4"
+                v-model="formData.payload"
+                hide-details="auto"
+                label="Payload"
+                :rules="isJson"
+                clearable
+              ></v-textarea>
+            </v-card>
+          </v-col>
 
-        <v-col cols="12" class="text-center">
-          <v-btn
-            color="primary"
-            class="mt-4"
-            @click="handleSubmit"
-            :loading="isLoading"
-          >
-            Submit
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-responsive>
-  </v-container>
+          <v-col cols="12" class="text-center">
+            <v-btn
+              color="primary"
+              class="mt-4"
+              @click="handleSubmit"
+              :loading="isLoading"
+              :disabled="!valid"
+            >
+              Submit
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-responsive>
+    </v-container>
+  </v-form>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { requestRmb } from "../client/client";
 import { useRmb } from "../stores/client";
 
@@ -84,6 +90,7 @@ const rmbStore = useRmb();
 const response = ref();
 const dialogVisible = ref(false);
 const isLoading = ref(false);
+const valid = ref(false);
 
 const formData = ref({
   command: "",
@@ -114,6 +121,7 @@ const handleSubmit = async () => {
 </script>
 <script lang="ts">
 import RmbDialog from "./dialoge.vue";
+import { isCommand, isNumber, isJson } from "../utils/validators";
 
 export default {
   name: "RequestForm",
