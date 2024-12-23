@@ -19,7 +19,7 @@ const useRmb = defineStore("rmb-client", {
     },
     async clear() {
       if (this.client) {
-        await disconnectClient(this.client);
+        await disconnectClient(this.client as Client);
         this.client = undefined;
       }
     },

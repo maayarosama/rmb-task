@@ -72,11 +72,15 @@ const valid = ref(false);
 
 const isLoading = ref(false);
 const isLogged = computed(() => {
-  return (
+  if (
     profileStore.profile &&
     Object.keys(profileStore.profile).length > 0 &&
     rmbStore.client
-  );
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 });
 
 const handleSubmit = async () => {

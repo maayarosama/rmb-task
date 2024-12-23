@@ -42,7 +42,7 @@ const handlePing = async () => {
     pingableNodes.value = [];
     for (const node of nodes.value) {
       console.log("pinging node:", node.twinId);
-      if (await pingNode(rmbStore.client, node.twinId)) {
+      if (await pingNode(rmbStore.client as Client, node.twinId)) {
         pingableNodes.value.push(node);
       } else {
         failedNodes.value.push(node);
@@ -62,6 +62,7 @@ import RmbDialog from "./dialoge.vue";
 
 import { getNodes, pingNode } from "@/utils/nodes";
 import { type Node } from "@/types/types";
+import type { Client } from "@threefold/rmb_direct_client";
 
 export default {
   name: "PingNodes",

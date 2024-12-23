@@ -79,13 +79,16 @@ const handlePing = async () => {
     failedNodes.value = [];
     pingableNodes.value = [];
     nodes.value = await getFarmNodes(farmId.value);
-    for (const node of nodes.value) {
-      if (await pingNode(rmbStore.client, node.twinId)) {
-        pingableNodes.value.push(node);
-      } else {
-        failedNodes.value.push(node);
+    if (rmbStore.client) {
+      for (const node of nodes.value) {
+        if (await pingNode(rmbStore.client as Client, node.twinId)) {
+          pingableNodes.value.push(node);
+        } else {
+          failedNodes.value.push(node);
+        }
       }
     }
+
     dialogVisible.value = true;
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);
@@ -99,6 +102,7 @@ import { getFarmNodes, pingNode } from "@/utils/nodes";
 import { type Node } from "@/types/types";
 import NodeSummary from "./nodes_summary.vue";
 import RmbDialog from "./dialoge.vue";
+import type { Client } from "@threefold/rmb_direct_client";
 export default {
   name: "PingFarmNodes",
   components: { NodeSummary, RmbDialog },

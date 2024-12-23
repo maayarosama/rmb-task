@@ -47,6 +47,7 @@ export async function requestRmb(
   return result;
 }
 
-export async function disconnectClient(rmbClient: Client) {
+export async function disconnectClient(rmbClient: Client | undefined) {
+  if (!rmbClient) return;
   return rmbClient.disconnect();
 }

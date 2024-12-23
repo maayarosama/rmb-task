@@ -103,7 +103,7 @@ const handleSubmit = async () => {
     isLoading.value = true;
     if (rmbStore.client) {
       response.value = await requestRmb(
-        rmbStore.client,
+        rmbStore.client as Client,
         [formData.value.nodeId],
         formData.value.command,
         formData.value.payload
@@ -122,6 +122,7 @@ const handleSubmit = async () => {
 <script lang="ts">
 import RmbDialog from "./dialoge.vue";
 import { isCommand, isNumber, isJson } from "../utils/validators";
+import type { Client } from "@threefold/rmb_direct_client";
 
 export default {
   name: "RequestForm",

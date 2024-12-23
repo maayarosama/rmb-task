@@ -44,14 +44,14 @@
         <v-card-text>
           <v-data-table-virtual
             :headers="tableHeaders"
-            :items="failedNodes"
+            :items="items"
             item-value="nodeId"
             class="elevation-1"
             item-height="100"
           >
-            <template v-slot:items="props">
+            <template v-slot="{ items }">
               <tbody>
-                <tr v-for="item in props.items" :key="item.nodeId">
+                <tr v-for="item in items" :key="item.nodeId">
                   <td>{{ item.nodeId }}</td>
                   <td>{{ item.twinId }}</td>
                 </tr>
@@ -79,10 +79,11 @@ const props = defineProps({
     default: () => [],
   },
 });
+const items = ref(props.failedNodes);
 const showFailedNodes = ref(false);
 const tableHeaders = [
-  { title: "Node ID", align: "start", key: "nodeId" },
-  { title: "Twin ID", align: "start", key: "twinId" },
+  { title: "Node ID", key: "nodeId" },
+  { title: "Twin ID", key: "twinId" },
 ];
 const toggleFailedNodes = () => {
   showFailedNodes.value = !showFailedNodes.value;
