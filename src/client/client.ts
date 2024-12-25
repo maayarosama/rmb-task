@@ -28,7 +28,7 @@ export async function requestRmb(
   destTwinIds: number[],
   cmd: string,
   payload: string,
-  expiration = 20,
+  expiration = 10,
   retries = 1
 ) {
   let result;
@@ -41,10 +41,11 @@ export async function requestRmb(
       retries
     );
     result = await rmbClient.read(requestId);
+    return result;
   } catch (e) {
     console.error(e);
+    return null;
   }
-  return result;
 }
 
 export async function disconnectClient(rmbClient: Client | undefined) {

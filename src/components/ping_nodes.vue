@@ -40,14 +40,25 @@ const handlePing = async () => {
     nodes.value = await getNodes();
     failedNodes.value = [];
     pingableNodes.value = [];
-    for (const node of nodes.value) {
-      console.log("pinging node:", node.twinId);
-      if (await pingNode(rmbStore.client as Client, node.twinId)) {
-        pingableNodes.value.push(node);
-      } else {
-        failedNodes.value.push(node);
+
+    const promises = nodes.value.map((node) => {
+      return pingNode(rmbStore.client as Client, node.twinId)
+        .then((response) => ({ node, success: true, data: response }))
+        .catch(() => ({ node, success: false, data: null }));
+    });
+
+    const res = await Promise.allSettled(promises);
+
+    for (const result of res) {
+      if (result.status === "fulfilled") {
+        if (result.value.data) {
+          pingableNodes.value.push(result.value.node);
+        } else {
+          failedNodes.value.push(result.value.node);
+        }
       }
     }
+
     dialogVisible.value = true;
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);

@@ -20,8 +20,8 @@ export async function pingNode(
     return response;
   } catch (error) {
     console.error(`Error pinging node with Twin ID ${nodeTwinId}:`, error);
+    return null;
   }
-  return response;
 }
 
 export async function getNodes(url = ""): Promise<Node[]> {

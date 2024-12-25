@@ -79,12 +79,20 @@ const handlePing = async () => {
     failedNodes.value = [];
     pingableNodes.value = [];
     nodes.value = await getFarmNodes(farmId.value);
-    if (rmbStore.client) {
-      for (const node of nodes.value) {
-        if (await pingNode(rmbStore.client as Client, node.twinId)) {
-          pingableNodes.value.push(node);
+    const promises = nodes.value.map((node) => {
+      return pingNode(rmbStore.client as Client, node.twinId)
+        .then((response) => ({ node, success: true, data: response }))
+        .catch(() => ({ node, success: false, data: null }));
+    });
+
+    const res = await Promise.allSettled(promises);
+
+    for (const result of res) {
+      if (result.status === "fulfilled") {
+        if (result.value.data) {
+          pingableNodes.value.push(result.value.node);
         } else {
-          failedNodes.value.push(node);
+          failedNodes.value.push(result.value.node);
         }
       }
     }
