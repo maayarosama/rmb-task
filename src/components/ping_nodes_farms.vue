@@ -79,21 +79,16 @@ const handlePing = async () => {
     failedNodes.value = [];
     pingableNodes.value = [];
     nodes.value = await getFarmNodes(farmId.value);
-    const promises = nodes.value.map((node) => {
-      return pingNode(rmbStore.client as Client, node.twinId)
-        .then((response) => ({ node, success: true, data: response }))
-        .catch(() => ({ node, success: false, data: null }));
-    });
+    const results = await batchPingNodes(
+      rmbStore.client as Client,
+      nodes.value
+    );
 
-    const res = await Promise.allSettled(promises);
-
-    for (const result of res) {
-      if (result.status === "fulfilled") {
-        if (result.value.data) {
-          pingableNodes.value.push(result.value.node);
-        } else {
-          failedNodes.value.push(result.value.node);
-        }
+    for (const res of results) {
+      if (res.response) {
+        pingableNodes.value.push(res.node);
+      } else {
+        failedNodes.value.push(res.node);
       }
     }
 
@@ -106,7 +101,7 @@ const handlePing = async () => {
 };
 </script>
 <script lang="ts">
-import { getFarmNodes, pingNode } from "@/utils/nodes";
+import { batchPingNodes, getFarmNodes } from "@/utils/nodes";
 import { type Node } from "@/types/types";
 import NodeSummary from "./nodes_summary.vue";
 import RmbDialog from "./dialoge.vue";
