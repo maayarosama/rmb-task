@@ -3,7 +3,7 @@
     <template #actions>
       <NodeSummary
         :totalNodes="nodes.length"
-        :pingableNodes="pingableNodes.length"
+        :pingableNodes="pingableNodes"
         :failedNodes="failedNodes"
       />
     </template>

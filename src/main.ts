@@ -3,8 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import "@mdi/font/css/materialdesignicons.css";
-import "vuetify/styles"; // Vuetify styles
-import "./assets/main.css"; // Your custom styles
+import "vuetify/styles";
+import "./assets/main.css";
 import { createPinia } from "pinia";
 
 const app = createApp(App);

@@ -1,6 +1,12 @@
 <template>
   <v-form v-model="valid" class="mx-auto">
     <v-row>
+      <v-col cols="12" v-if="isLogged" class="d-flex justify-end">
+        <v-btn icon color="error" @click="handleLogout">
+          <v-icon>mdi-logout</v-icon>
+        </v-btn>
+      </v-col>
+
       <v-col cols="12">
         <v-card
           class="py-4"
@@ -93,6 +99,15 @@ const handleSubmit = async () => {
     console.error(`Couldn't load profile: ${err}`);
   } finally {
     isLoading.value = false;
+  }
+};
+const handleLogout = async () => {
+  try {
+    profileStore.clear();
+    rmbStore.clear();
+    emit("close");
+  } catch (err) {
+    console.error(`Couldn't logout: ${err}`);
   }
 };
 </script>

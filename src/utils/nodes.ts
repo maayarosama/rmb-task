@@ -26,7 +26,7 @@ export async function getNodes(url = ""): Promise<Node[]> {
   const r = url || window.env.GRIDPROXY_URL;
 
   return axios
-    .get<Node[]>(urlJoin(r, `/nodes`))
+    .get<Node[]>(urlJoin(r, `/nodes?status=up`))
     .then((response: AxiosResponse<Node[]>) => {
       return response.data.map((node) => ({
         twinId: node.twinId,
@@ -42,7 +42,7 @@ export async function getNodes(url = ""): Promise<Node[]> {
 export async function getFarmNodes(farmId: number, url = ""): Promise<Node[]> {
   const r = url || window.env.GRIDPROXY_URL;
   return axios
-    .get<Node[]>(urlJoin(r, `/nodes?farm_ids=${[farmId]}`))
+    .get<Node[]>(urlJoin(r, `/status=up&nodes?farm_ids=${[farmId]}`))
     .then((response: AxiosResponse<Node[]>) => {
       return response.data.map((node) => ({
         twinId: node.twinId,

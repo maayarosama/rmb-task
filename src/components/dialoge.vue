@@ -1,21 +1,28 @@
 <template>
   <v-dialog v-model="isVisible" max-width="70%">
     <v-card>
-      <v-sheet color="primary" class="w-100 d-flex align-center justify-center">
-        <p class="my-2 font-weight-bold text-h6">{{ title }}</p>
+      <v-sheet
+        color="primary"
+        class="w-100 d-flex align-center position-relative"
+      >
+        <p class="my-2 font-weight-bold text-h6 text-center w-100">
+          {{ title }}
+        </p>
+        <v-btn
+          icon
+          flat
+          class="justify-end ma-2"
+          color="primary"
+          @click="closeDialog"
+        >
+          <v-icon color="white">mdi-close</v-icon>
+        </v-btn>
       </v-sheet>
-
       <v-card-text>
         <div>
           <slot name="actions" />
         </div>
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn color="primary" variant="tonal" @click="closeDialog"
-          >Close</v-btn
-        >
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

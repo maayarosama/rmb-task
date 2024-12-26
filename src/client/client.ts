@@ -1,7 +1,5 @@
 import { Client } from "@threefold/rmb_direct_client";
-// export async function connectClient(
-//   mnemonic: string
-// )
+
 export async function connectClient(
   mnemonic: string
 ): Promise<Client | undefined> {
