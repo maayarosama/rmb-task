@@ -43,6 +43,24 @@
                 :rules="isCommand"
                 clearable
               ></v-text-field>
+              <v-chip-group class="pa-4">
+                <v-chip
+                  v-for="command in commands"
+                  :key="command.key"
+                  class="pa-5 mb-3"
+                  :variant="
+                    selectedCommand === command.text ? 'flat' : 'outlined'
+                  "
+                  :color="
+                    selectedCommand === command.text ? 'primary' : 'white'
+                  "
+                  @click="handleSelection(command)"
+                >
+                  <div class="d-flex justify-center">
+                    <p class="ml-2">{{ command.key }}</p>
+                  </div>
+                </v-chip>
+              </v-chip-group>
             </v-card>
           </v-col>
 
@@ -82,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { requestRmb } from "../client/client";
 import { useRmb } from "../stores/client";
 
@@ -98,6 +116,36 @@ const formData = ref({
   nodeId: 17,
 });
 
+interface Command {
+  key: string;
+  text: string;
+}
+const commands = ref<Command[]>([
+  { key: "Version", text: "zos.system.version" },
+  { key: "Diagnostics", text: "zos.system.diagnostics" },
+  { key: "Statistics", text: "zos.statistics.get" },
+  { key: "PerfTests", text: "zos.perf.get_all" },
+]);
+
+const selectedCommand = ref<string>("");
+
+const handleSelection = (command: Command) => {
+  selectedCommand.value = command.text;
+};
+watch(selectedCommand, (newVal) => {
+  if (newVal) {
+    formData.value.command = newVal;
+  }
+});
+
+watch(
+  () => formData.value.command,
+  (newVal) => {
+    if (newVal !== selectedCommand.value) {
+      selectedCommand.value = "";
+    }
+  }
+);
 const handleSubmit = async () => {
   try {
     isLoading.value = true;
