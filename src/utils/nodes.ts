@@ -3,7 +3,6 @@ import { requestRmb } from "../client/client";
 import { default as axios, type AxiosResponse } from "axios";
 import urlJoin from "url-join";
 import { ZOSVersionResultModel, type Node } from "@/types/types";
-
 export async function pingNode(
   rmbClient: Client,
   nodeTwinId: number
@@ -42,7 +41,7 @@ export async function getNodes(url = ""): Promise<Node[]> {
 export async function getFarmNodes(farmId: number, url = ""): Promise<Node[]> {
   const r = url || window.env.GRIDPROXY_URL;
   return axios
-    .get<Node[]>(urlJoin(r, `/status=up&nodes?farm_ids=${[farmId]}`))
+    .get<Node[]>(urlJoin(r, `/nodes?status=up&farm_ids=${[farmId]}`))
     .then((response: AxiosResponse<Node[]>) => {
       return response.data.map((node) => ({
         twinId: node.twinId,
@@ -97,4 +96,48 @@ export async function batchPingNodes(
   );
 
   return results;
+}
+
+export async function getNodesSummary(
+  rmbClient: Client,
+  version: string,
+  nodes: Node[]
+): Promise<{
+  nodes: Node[];
+  matchedNodes: Node[];
+  unMatchedNodes: Node[];
+} | null> {
+  try {
+    const results = await batchPingNodes(rmbClient, nodes);
+    for (const res of results) {
+      res.node.version = res.response?.zinit;
+    }
+    nodes = results.map((res) => res.node);
+    const { matchedNodes, unMatchedNodes } = MatchNodesByVersion(
+      nodes,
+      version
+    );
+    return { nodes, matchedNodes, unMatchedNodes };
+  } catch (error) {
+    console.error(`Error getting summary:`, error);
+    return null;
+  }
+}
+
+function MatchNodesByVersion(
+  nodes: Node[],
+  version: string
+): { matchedNodes: Node[]; unMatchedNodes: Node[] } {
+  const matchedNodes: Node[] = [];
+  const unMatchedNodes: Node[] = [];
+
+  nodes.forEach((node) => {
+    if (node.version === version) {
+      matchedNodes.push(node);
+    } else {
+      unMatchedNodes.push(node);
+    }
+  });
+
+  return { matchedNodes, unMatchedNodes };
 }

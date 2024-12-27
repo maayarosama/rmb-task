@@ -1,5 +1,7 @@
 import { validateMnemonic } from "bip39";
 
+export const isRequired = [(v: string) => !!v || "Field is required."];
+
 export const isMnemonic = [
   (v: string) => !!v || "Mnemonic is required.",
   (v: string) =>

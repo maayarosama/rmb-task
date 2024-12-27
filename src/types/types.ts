@@ -5,6 +5,7 @@ export class ZOSVersionResultModel {
 export interface Node {
   twinId: number;
   nodeId: number;
+  version?: string;
 }
 
 export interface Profile {
