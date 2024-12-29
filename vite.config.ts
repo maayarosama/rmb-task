@@ -8,6 +8,8 @@ import vuetify from "vite-plugin-vuetify";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/rmb-executor/",
+
   plugins: [
     vue(),
     nodePolyfills(),
