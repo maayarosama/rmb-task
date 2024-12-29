@@ -164,8 +164,16 @@ const handleSubmit = async () => {
     response.value = JSON.stringify(response.value, null, 2);
 
     dialogVisible.value = true;
+    toast.success("Request completed successfully", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } catch (err) {
     console.error(`RMB Request failed due to ${err}`);
+    toast.error("Request failed", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } finally {
     isLoading.value = false;
   }
@@ -175,6 +183,8 @@ const handleSubmit = async () => {
 import RmbDialog from "./dialoge.vue";
 import { isCommand, isNumber, isJson } from "../utils/validators";
 import type { Client } from "@threefold/rmb_direct_client";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
   name: "RequestForm",

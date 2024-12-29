@@ -26,6 +26,26 @@
           ></v-text-field>
         </v-card>
       </v-col>
+
+      <v-col cols="12">
+        <v-card
+          class="py-4"
+          color="surface-variant"
+          rounded="lg"
+          variant="outlined"
+        >
+          <v-text-field
+            class="pa-4"
+            v-model="profile.timeout"
+            hide-details="auto"
+            type="number"
+            label="Timeout"
+            :disabled="isLogged"
+            :rules="isNumber"
+            clearable
+          ></v-text-field>
+        </v-card>
+      </v-col>
       <v-col cols="12">
         <v-card
           class="py-4"
@@ -64,7 +84,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRmb } from "../stores/client";
-import { isMnemonic } from "../utils/validators";
+import { isMnemonic, isNumber } from "../utils/validators";
 
 const emit = defineEmits(["close"]);
 const rmbStore = useRmb();
@@ -73,6 +93,7 @@ const profileStore = useProfile();
 const profile = ref<Profile>({
   mnemonic: profileStore.profile?.mnemonic || "",
   network: profileStore.profile?.network || networks.value[0],
+  timeout: profileStore.profile?.timeout || 10,
 });
 const valid = ref(false);
 
@@ -95,8 +116,16 @@ const handleSubmit = async () => {
     await profileStore.set(profile.value);
     await rmbStore.set(profileStore.profile?.mnemonic);
     emit("close");
+    toast.success("Loaded profile successfully", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } catch (err) {
     console.error(`Couldn't load profile: ${err}`);
+    toast.error("Couldn't load profile", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } finally {
     isLoading.value = false;
   }
@@ -108,6 +137,10 @@ const handleLogout = async () => {
     emit("close");
   } catch (err) {
     console.error(`Couldn't logout: ${err}`);
+    toast.error("Couldn't logout", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   }
 };
 </script>
@@ -115,6 +148,8 @@ const handleLogout = async () => {
 import RmbDialog from "./dialoge.vue";
 import type { Profile } from "@/types/types";
 import { useProfile } from "@/stores/profile";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
   name: "ProfileForm",

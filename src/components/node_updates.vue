@@ -85,25 +85,25 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="6" class="text-center">
+            <v-col lg="6" md="12" class="text-center">
               <v-btn
                 color="primary"
-                class="mt-4"
+                class="mt-4 v-btn"
                 @click="handleSummary"
                 :loading="isLoading"
                 :disabled="!valid || isLoadingFarm"
               >
-                Summary
+                Check nodes' version
               </v-btn>
             </v-col>
-            <v-col cols="6" class="text-center">
+            <v-col lg="6" md="12" class="text-center">
               <v-btn
                 color="primary"
-                class="mt-4 wrap-text"
+                class="mt-4 v-btn"
                 @click="isFarm = !isFarm"
                 :disabled="!valid || isLoadingFarm || isLoading"
               >
-                Summary In Farm
+                Check nodes' version In Farm
               </v-btn>
             </v-col>
           </v-row>
@@ -114,7 +114,7 @@
         <v-form v-model="validFarm" class="mx-auto">
           <v-container v-if="isFarm" class="justify-center align-center">
             <v-row>
-              <v-col cols="8">
+              <v-col lg="8" md="12">
                 <v-card
                   class="py-1"
                   color="surface-variant"
@@ -133,15 +133,15 @@
                 </v-card>
               </v-col>
 
-              <v-col cols="4" class="text-center">
+              <v-col lg="4" md="12" class="text-center">
                 <v-btn
                   color="primary"
-                  class="mt-4"
+                  class="mt-4 v-btn"
                   @click="handleSummary"
                   :loading="isLoadingFarm"
                   :disabled="!validFarm"
                 >
-                  Summary
+                  Check nodes' version
                 </v-btn>
               </v-col>
             </v-row>
@@ -203,8 +203,16 @@ const handleSummary = async () => {
     }
     isFarm.value = false;
     dialogVisible.value = true;
+    toast.success("Retrieved nodes summary successfully", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);
+    toast.error("Getting nodes summary failed", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } finally {
     isLoading.value = false;
     isLoadingFarm.value = false;
@@ -219,10 +227,16 @@ import RmbDialog from "./dialoge.vue";
 import type { Client } from "@threefold/rmb_direct_client";
 import { isVersionValid } from "@/utils/validators";
 import NodeTable from "./nodes_table.vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
   name: "NodeUpdates",
   components: { NodeSummary, RmbDialog, NodeTable },
 };
 </script>
-<style scoped></style>
+<style scoped>
+.v-btn {
+  width: fit-content;
+}
+</style>

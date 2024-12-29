@@ -11,4 +11,5 @@ export interface Node {
 export interface Profile {
   mnemonic: string;
   network: string;
+  timeout: number;
 }
