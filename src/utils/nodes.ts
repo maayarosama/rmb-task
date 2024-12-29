@@ -157,7 +157,7 @@ export async function getNodesSummary(
   try {
     const results = await batchPingNodes(rmbClient, nodes);
     for (const res of results) {
-      res.node.version = res.response?.zinit;
+      res.node.version = res.response?.zos;
     }
     nodes = results.map((res) => res.node);
     const { matchedNodes, unMatchedNodes } = MatchNodesByVersion(

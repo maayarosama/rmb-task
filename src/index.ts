@@ -7,6 +7,7 @@ declare global {
       GRIDPROXY_URL: string;
       RELAY_URL: string;
       TFCHAIN_URL: string;
+      TIMEOUT: number;
     };
   }
 }

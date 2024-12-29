@@ -1,4 +1,4 @@
-export default function getDefaultUrls(network: string) {
+export default function getDefaultUrls(network: string, timeout: number) {
   const base = network === "main" ? "grid.tf" : `${network}.grid.tf`;
   const urls = {
     gridproxy: `https://gridproxy.${base}`,
@@ -12,6 +12,7 @@ export default function getDefaultUrls(network: string) {
       GRIDPROXY_URL: urls.gridproxy,
       RELAY_URL: urls.relay,
       TFCHAIN_URL: urls.tfchain,
+      TIMEOUT: timeout,
     };
   }
 }

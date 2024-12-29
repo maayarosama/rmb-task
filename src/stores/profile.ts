@@ -15,7 +15,7 @@ const useProfile = defineStore("profile", {
   actions: {
     set(profile: Profile) {
       this.profile = profile;
-      getDefaultUrls(this.profile.network);
+      getDefaultUrls(this.profile.network, this.profile.timeout);
     },
 
     updateNetwork(network: string) {

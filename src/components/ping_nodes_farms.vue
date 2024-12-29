@@ -148,8 +148,16 @@ const handlePing = async () => {
     }
 
     dialogVisible.value = true;
+    toast.success("Pinged nodes successfully", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } catch (err) {
     console.error(`RMB Client connection failed due to ${err}`);
+    toast.error("Pinging nodes failed", {
+      theme: "colored",
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } finally {
     isLoading.value = false;
   }
@@ -162,6 +170,8 @@ import NodeSummary from "./nodes_summary.vue";
 import RmbDialog from "./dialoge.vue";
 import type { Client } from "@threefold/rmb_direct_client";
 import NodeTable from "./nodes_table.vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
   name: "PingFarmNodes",

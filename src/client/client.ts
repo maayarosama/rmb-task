@@ -26,7 +26,7 @@ export async function requestRmb(
   destTwinIds: number[],
   cmd: string,
   payload: string,
-  expiration = 10,
+  expiration = window.env.TIMEOUT,
   retries = 1
 ) {
   let result;
