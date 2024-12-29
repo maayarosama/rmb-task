@@ -12,11 +12,61 @@
 
     <RmbDialog v-model:modelValue="dialogVisible" :title="'Nodes Summary'">
       <template #actions>
-        <NodeSummary
-          :totalNodes="nodes.length"
-          :pingableNodes="pingableNodes"
-          :failedNodes="failedNodes"
-        />
+        <NodeSummary :totalNodes="nodes.length">
+          <template #summary>
+            <p>
+              <span><strong>Total Number of Pingable Nodes: </strong></span>
+              <span> {{ pingableNodes.length }}</span>
+              <v-icon
+                color="primary"
+                v-if="pingableNodes.length"
+                class="cursor-pointer ma-2"
+                @click="showPingableNodes = !showPingableNodes"
+              >
+                {{
+                  showPingableNodes
+                    ? "mdi-arrow-up-drop-circle-outline"
+                    : "mdi-arrow-down-drop-circle-outline"
+                }}
+              </v-icon>
+            </p>
+            <v-expand-transition v-if="showPingableNodes">
+              <NodeTable
+                title="Pingable Nodes"
+                :items="pingableNodes"
+                :tableHeaders="tableHeaders"
+              />
+            </v-expand-transition>
+            <p>
+              <span
+                ><strong
+                  >Total Number of Nodes Failed to Respond:
+                </strong></span
+              >
+              <span> {{ failedNodes.length }}</span>
+
+              <v-icon
+                color="primary"
+                v-if="failedNodes.length"
+                class="cursor-pointer ma-2"
+                @click="showFailedNodes = !showFailedNodes"
+              >
+                {{
+                  showFailedNodes
+                    ? "mdi-arrow-up-drop-circle-outline"
+                    : "mdi-arrow-down-drop-circle-outline"
+                }}
+              </v-icon>
+            </p>
+
+            <v-expand-transition v-if="showFailedNodes">
+              <NodeTable
+                title="Failed Nodes"
+                :items="failedNodes"
+                :tableHeaders="tableHeaders"
+              /> </v-expand-transition
+          ></template>
+        </NodeSummary>
       </template>
     </RmbDialog>
   </v-container>
@@ -33,7 +83,13 @@ const isLoading = ref(false);
 const failedNodes = ref<Node[]>([]);
 const pingableNodes = ref<Node[]>([]);
 const nodes = ref<Node[]>([]);
+const showFailedNodes = ref(false);
+const showPingableNodes = ref(false);
 
+const tableHeaders = [
+  { title: "Node ID", key: "nodeId" },
+  { title: "Twin ID", key: "twinId" },
+];
 const handlePing = async () => {
   try {
     isLoading.value = true;
@@ -68,9 +124,10 @@ import RmbDialog from "./dialoge.vue";
 import { batchPingNodes, getNodes } from "@/utils/nodes";
 import { type Node } from "@/types/types";
 import type { Client } from "@threefold/rmb_direct_client";
+import NodeTable from "./nodes_table.vue";
 
 export default {
   name: "PingNodes",
-  components: { RmbDialog, NodeSummary },
+  components: { RmbDialog, NodeSummary, NodeTable },
 };
 </script>

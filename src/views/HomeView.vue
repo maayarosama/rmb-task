@@ -5,7 +5,7 @@
         <PingNodes />
         <PingFarmNodes />
         <v-card
-          class="py-1 pb-1"
+          class="py-1 pb-1 my-5"
           color="surface-variant"
           rounded="lg"
           variant="outlined"

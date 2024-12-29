@@ -17,8 +17,9 @@
         <template v-slot="{ items }">
           <tbody>
             <tr v-for="item in items" :key="item.nodeId">
-              <td>{{ item.nodeId }}</td>
-              <td>{{ item.twinId }}</td>
+              <td v-for="header in tableHeaders" :key="header.key">
+                {{ item[header.key] || "-" }}
+              </td>
             </tr>
           </tbody>
         </template>
@@ -34,7 +35,8 @@ const props = defineProps({
     default: "",
   },
   tableHeaders: {
-    type: Array as PropType<Object[]>,
+    // Dynamically specify headers with `title` and `key`
+    type: Array as PropType<{ title: string; key: string }[]>,
     default: () => [],
   },
   items: {
