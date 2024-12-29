@@ -15,8 +15,7 @@ export async function connectClient(
   try {
     await client.connect();
   } catch (err) {
-    console.error(`RMB Client connection failed due to ${err}`);
-    return undefined;
+    throw new Error(` Error: ${err}`);
   }
   return client;
 }
@@ -41,8 +40,9 @@ export async function requestRmb(
     result = await rmbClient.read(requestId);
     return result;
   } catch (e) {
-    console.error(e);
-    return null;
+    throw new Error(
+      `Failed to request RMB after ${retries} attempts. Error: ${e}`
+    );
   }
 }
 
