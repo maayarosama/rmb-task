@@ -3,7 +3,7 @@ import { validateMnemonic } from "bip39";
 export const isVersionValid = [
   (v: string) => !!v || "Field is required.",
   (v: string) =>
-    /^v\d+\.\d+\.\d+$/.test(v) || "Version must follow the format 'vX.X.X'.",
+    /^\d+\.\d+\.\d+$/.test(v) || "Version must follow the format 'x.x.x'.",
 ];
 export const isMnemonic = [
   (v: string) => !!v || "Mnemonic is required.",

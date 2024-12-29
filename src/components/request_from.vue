@@ -43,24 +43,28 @@
                 :rules="isCommand"
                 clearable
               ></v-text-field>
-              <v-chip-group class="pa-4">
-                <v-chip
-                  v-for="command in commands"
-                  :key="command.key"
-                  class="pa-5 mb-3"
-                  :variant="
-                    selectedCommand === command.text ? 'flat' : 'outlined'
-                  "
-                  :color="
-                    selectedCommand === command.text ? 'primary' : 'white'
-                  "
-                  @click="handleSelection(command)"
-                >
-                  <div class="d-flex justify-center">
-                    <p class="ml-2">{{ command.key }}</p>
-                  </div>
-                </v-chip>
-              </v-chip-group>
+              <v-row justify="center">
+                <v-col cols="12" class="d-flex justify-center">
+                  <v-chip-group class="pa-4 d-flex justify-center">
+                    <v-chip
+                      v-for="command in commands"
+                      :key="command.key"
+                      class="pa-5 mb-3"
+                      :variant="
+                        selectedCommand === command.text ? 'flat' : 'outlined'
+                      "
+                      :color="
+                        selectedCommand === command.text ? 'primary' : 'white'
+                      "
+                      @click="handleSelection(command)"
+                    >
+                      <div class="d-flex justify-center">
+                        <p class="ml-2">{{ command.key }}</p>
+                      </div>
+                    </v-chip>
+                  </v-chip-group>
+                </v-col>
+              </v-row>
             </v-card>
           </v-col>
 
