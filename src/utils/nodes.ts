@@ -16,8 +16,9 @@ export async function pingNode(
     );
     return response as ZOSVersionResultModel;
   } catch (error) {
-    console.error(`Error pinging node with Twin ID ${nodeTwinId}:`, error);
-    return null;
+    throw new Error(
+      `Error pinging node with Twin ID ${nodeTwinId}. Error: ${error}`
+    );
   }
 }
 
@@ -123,11 +124,9 @@ export async function batchPingNodes(
             const response = await pingNode(rmbClient, node.twinId);
             return { node, response: response as ZOSVersionResultModel | null };
           } catch (error) {
-            console.error(
-              `Error pinging node with Twin ID ${node.twinId}:`,
-              error
+            throw new Error(
+              `Error pinging node with Twin ID ${node.twinId}. Error: ${error}`
             );
-            return { node, response: null };
           }
         })
       );
@@ -166,8 +165,7 @@ export async function getNodesSummary(
     );
     return { nodes, matchedNodes, unMatchedNodes };
   } catch (error) {
-    console.error(`Error getting summary:`, error);
-    return null;
+    throw new Error(`Error getting summary. Error: ${error}`);
   }
 }
 
