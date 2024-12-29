@@ -133,7 +133,7 @@ const handlePing = async () => {
     isLoading.value = true;
     failedNodes.value = [];
     pingableNodes.value = [];
-    nodes.value = await getFarmNodes(farmId.value);
+    nodes.value = await getAllNodes(farmId.value);
     const results = await batchPingNodes(
       rmbStore.client as Client,
       nodes.value
@@ -156,7 +156,7 @@ const handlePing = async () => {
 };
 </script>
 <script lang="ts">
-import { batchPingNodes, getFarmNodes } from "@/utils/nodes";
+import { batchPingNodes, getAllNodes } from "@/utils/nodes";
 import { type Node } from "@/types/types";
 import NodeSummary from "./nodes_summary.vue";
 import RmbDialog from "./dialoge.vue";

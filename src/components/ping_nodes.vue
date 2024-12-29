@@ -93,7 +93,7 @@ const tableHeaders = [
 const handlePing = async () => {
   try {
     isLoading.value = true;
-    nodes.value = await getNodes();
+    nodes.value = await getAllNodes();
     failedNodes.value = [];
     pingableNodes.value = [];
     const results = await batchPingNodes(
@@ -121,7 +121,7 @@ const handlePing = async () => {
 import NodeSummary from "./nodes_summary.vue";
 import RmbDialog from "./dialoge.vue";
 
-import { batchPingNodes, getNodes } from "@/utils/nodes";
+import { batchPingNodes, getAllNodes } from "@/utils/nodes";
 import { type Node } from "@/types/types";
 import type { Client } from "@threefold/rmb_direct_client";
 import NodeTable from "./nodes_table.vue";

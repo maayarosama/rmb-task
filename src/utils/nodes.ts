@@ -21,16 +21,22 @@ export async function pingNode(
   }
 }
 
-export async function getNodes(url = ""): Promise<Node[]> {
+async function getNodes(
+  page = 1,
+  url = ""
+): Promise<{ loadedNodes: Node[]; totalPages: number }> {
   const r = url || window.env.GRIDPROXY_URL;
 
   return axios
-    .get<Node[]>(urlJoin(r, `/nodes?status=up`))
+    .get<Node[]>(urlJoin(r, `/nodes?ret_count=true&page=${page}&status=up`))
     .then((response: AxiosResponse<Node[]>) => {
-      return response.data.map((node) => ({
-        twinId: node.twinId,
-        nodeId: node.nodeId,
-      }));
+      return {
+        loadedNodes: response.data.map((node) => ({
+          twinId: node.twinId,
+          nodeId: node.nodeId,
+        })),
+        totalPages: parseInt(response.headers.pages, 10),
+      };
     })
     .catch((error) => {
       console.error("Error fetching the item list:", error);
@@ -38,15 +44,56 @@ export async function getNodes(url = ""): Promise<Node[]> {
     });
 }
 
-export async function getFarmNodes(farmId: number, url = ""): Promise<Node[]> {
+export async function getAllNodes(farmId = 0): Promise<Node[]> {
+  let loadedNodes: Node[] = [];
+  let totalPages = 0;
+
+  if (farmId) {
+    const result = await getFarmNodes(farmId);
+    loadedNodes = result.loadedNodes;
+    totalPages = result.totalPages;
+  } else {
+    const result = await getNodes();
+    loadedNodes = result.loadedNodes;
+    totalPages = result.totalPages;
+  }
+
+  const nodes: Node[] = [...loadedNodes];
+
+  for (let i = 2; i <= totalPages; i++) {
+    let result;
+    if (farmId) {
+      result = await getFarmNodes(farmId, i);
+    } else {
+      result = await getNodes(i);
+    }
+    nodes.push(...result.loadedNodes);
+  }
+
+  return nodes;
+}
+
+async function getFarmNodes(
+  farmId: number,
+  page = 1,
+  url = ""
+): Promise<{ loadedNodes: Node[]; totalPages: number }> {
   const r = url || window.env.GRIDPROXY_URL;
   return axios
-    .get<Node[]>(urlJoin(r, `/nodes?status=up&farm_ids=${[farmId]}`))
+    .get<Node[]>(
+      urlJoin(
+        r,
+        `/nodes?ret_count=true&page=${page}&status=up&farm_ids=${[farmId]}`
+      )
+    )
     .then((response: AxiosResponse<Node[]>) => {
-      return response.data.map((node) => ({
-        twinId: node.twinId,
-        nodeId: node.nodeId,
-      }));
+      return {
+        loadedNodes: response.data.map((node) => ({
+          twinId: node.twinId,
+          nodeId: node.nodeId,
+        })),
+        totalPages: parseInt(response.headers.pages, 10),
+      };
     })
     .catch((error) => {
       console.error("Error fetching the item list:", error);

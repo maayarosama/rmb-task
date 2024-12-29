@@ -185,10 +185,10 @@ const handleSummary = async () => {
   try {
     if (isFarm.value) {
       isLoadingFarm.value = true;
-      nodes.value = await getFarmNodes(farmId.value);
+      nodes.value = await getAllNodes(farmId.value);
     } else {
       isLoading.value = true;
-      nodes.value = await getNodes();
+      nodes.value = await getAllNodes();
     }
     const result = await getNodesSummary(
       rmbStore.client as Client,
@@ -212,7 +212,7 @@ const handleSummary = async () => {
 };
 </script>
 <script lang="ts">
-import { getFarmNodes, getNodes, getNodesSummary } from "@/utils/nodes";
+import { getAllNodes, getNodesSummary } from "@/utils/nodes";
 import { type Node } from "@/types/types";
 import NodeSummary from "./nodes_summary.vue";
 import RmbDialog from "./dialoge.vue";
