@@ -1,49 +1,77 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500px">
+  <v-dialog v-model="isVisible" max-width="70%">
     <v-card>
-      <v-card-title>Dialog</v-card-title>
-      <v-card-text> {{ response }} </v-card-text>
-      <v-card-actions>
-        <v-btn color="primary" @click="closeDialog">Close</v-btn>
-      </v-card-actions>
+      <v-sheet
+        color="primary"
+        class="w-100 d-flex align-center position-relative"
+      >
+        <p class="my-2 font-weight-bold text-h6 text-center w-100">
+          {{ title }}
+        </p>
+        <v-btn
+          icon
+          flat
+          class="justify-end ma-2"
+          color="primary"
+          @click="closeDialog"
+        >
+          <v-icon color="white">mdi-close</v-icon>
+        </v-btn>
+      </v-sheet>
+      <v-card-text>
+        <div>
+          <slot name="actions" />
+        </div>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, type PropType } from "vue";
+import { defineComponent, ref, type PropType, watch } from "vue";
 
 export default defineComponent({
-  name: "DialogComponent",
+  name: "RmbDialog",
   props: {
-    dialogVisible: {
+    modelValue: {
       type: Boolean,
-      default: false,
+      required: true,
     },
-    response: {
-      type: Object as PropType<any>,
-      default: false,
+    title: {
+      type: String,
+      default: "Dialog Title",
     },
   },
+  emits: ["update:modelValue", "close"],
   setup(props, { emit }) {
-    const dialog = ref(props.dialogVisible);
+    const isVisible = ref(props.modelValue);
 
     watch(
-      () => props.dialogVisible,
+      () => props.modelValue,
       (newVal) => {
-        dialog.value = newVal;
+        isVisible.value = newVal;
       }
     );
 
     const closeDialog = () => {
-      dialog.value = false;
-      emit("update:dialogVisible", false);
+      isVisible.value = false;
+      emit("update:modelValue", false);
+      emit("close");
     };
 
     return {
-      dialog,
+      isVisible,
       closeDialog,
+      title: props.title,
     };
   },
 });
 </script>
+
+<style lang="scss">
+@import "highlight.js/styles/atom-one-dark.css";
+
+.dark-bg {
+  background-color: var(--v-theme-background-overlay-multiplier);
+}
+</style>
