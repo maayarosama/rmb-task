@@ -124,9 +124,7 @@ export async function batchPingNodes(
             const response = await pingNode(rmbClient, node.twinId);
             return { node, response: response as ZOSVersionResultModel | null };
           } catch (error) {
-            throw new Error(
-              `Error pinging node with Twin ID ${node.twinId}. Error: ${error}`
-            );
+            return { node, response: null };
           }
         })
       );
