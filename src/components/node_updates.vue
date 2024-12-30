@@ -69,7 +69,9 @@
         color="primary"
         class="w-100 d-flex align-center justify-center pt-0"
       >
-        <p class="my-2 font-weight-bold text-h6">Nodes' Summary</p>
+        <p class="my-2 font-weight-bold text-h6">
+          Check Against Node's Version
+        </p>
       </v-sheet>
       <v-form v-model="valid" class="mx-auto mt-2">
         <v-container class="justify-center align-center">
@@ -79,7 +81,7 @@
                 class="pb-1 px-2"
                 v-model="version"
                 hide-details="auto"
-                label="Node's Version"
+                label="Node's zos  Version"
                 :rules="isVersionValid"
                 clearable
               ></v-text-field>
