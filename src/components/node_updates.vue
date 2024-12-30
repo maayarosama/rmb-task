@@ -114,7 +114,7 @@
         <v-form v-model="validFarm" class="mx-auto">
           <v-container v-if="isFarm" class="justify-center align-center">
             <v-row>
-              <v-col lg="8" md="12">
+              <v-col lg="6" md="12">
                 <v-card
                   class="py-1"
                   color="surface-variant"
@@ -133,7 +133,7 @@
                 </v-card>
               </v-col>
 
-              <v-col lg="4" md="12" class="text-center">
+              <v-col lg="6" md="12" class="text-center">
                 <v-btn
                   color="primary"
                   class="mt-4 v-btn"
