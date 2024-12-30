@@ -5,7 +5,6 @@
         <p class="my-2 font-weight-bold text-h6">{{ title }}</p>
       </v-sheet>
     </v-card-title>
-
     <v-card-text>
       <v-data-table
         :headers="tableHeaders"
@@ -14,7 +13,16 @@
         class="elevation-1"
         item-height="10"
       >
-        <template v-slot="{ items }">
+        <template v-slot:default="{ items }">
+          <thead style="background-color: #1aa18f">
+            <tr>
+              <th v-for="header in tableHeaders" :key="header.key">
+                <b>
+                  {{ header.title }}
+                </b>
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr v-for="item in items" :key="item.nodeId">
               <td v-for="header in tableHeaders" :key="header.key">
