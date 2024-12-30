@@ -85,7 +85,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col lg="6" md="12" class="text-center">
+            <v-col lg="5" md="12" class="text-center">
               <v-btn
                 color="primary"
                 class="mt-4 v-btn"
@@ -96,7 +96,7 @@
                 Check nodes' version
               </v-btn>
             </v-col>
-            <v-col lg="6" md="12" class="text-center">
+            <v-col lg="7" md="12" class="text-center">
               <v-btn
                 color="primary"
                 class="mt-4 v-btn"
