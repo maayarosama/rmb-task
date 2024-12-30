@@ -1,9 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6" class="d-flex flex-column align-center justify-center">
-        <PingNodes />
-        <PingFarmNodes />
+      <v-col
+        cols="6"
+        class="py-10 my-10 d-flex flex-column align-center justify-center"
+      >
         <v-card
           class="py-1 pb-1 my-5"
           color="surface-variant"
@@ -14,7 +15,14 @@
         </v-card>
       </v-col>
       <v-col cols="6">
-        <RequestForm />
+        <v-card
+          class="py-1 pb-1 my-5"
+          color="surface-variant"
+          rounded="lg"
+          variant="outlined"
+        >
+          <RequestForm />
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -23,12 +31,10 @@
 
 <script lang="ts">
 import RequestForm from "../components/request_from.vue";
-import PingNodes from "../components/ping_nodes.vue";
-import PingFarmNodes from "../components/ping_nodes_farms.vue";
 import NodeUpdates from "../components/node_updates.vue";
 
 export default {
   name: "HomeView",
-  components: { RequestForm, PingNodes, PingFarmNodes, NodeUpdates },
+  components: { RequestForm, NodeUpdates },
 };
 </script>

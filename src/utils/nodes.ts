@@ -141,6 +141,51 @@ export async function batchPingNodes(
 
   return results;
 }
+export async function batchRequest(
+  rmbClient: Client,
+  nodes: Node[],
+  command: string,
+  batchSize: number = 25
+): Promise<{ node: Node; response: string | null }[]> {
+  const batches: Node[][] = [];
+  const results: { node: Node; response: string | null }[] = [];
+
+  // Split nodes into batches
+  for (let i = 0; i < nodes.length; i += batchSize) {
+    batches.push(nodes.slice(i, i + batchSize));
+  }
+
+  await Promise.allSettled(
+    batches.map(async (batch) => {
+      const batchResults = await Promise.allSettled(
+        batch.map(async (node) => {
+          try {
+            const response = (await requestRmb(
+              rmbClient,
+              [node.twinId],
+              command,
+              ""
+            )) as string | null;
+            return { node, response };
+          } catch (error) {
+            console.error(`Error for node ${node.twinId}:`, error);
+            return { node, response: null };
+          }
+        })
+      );
+
+      batchResults.forEach((result) => {
+        if (result.status === "fulfilled") {
+          results.push(result.value);
+        } else {
+          results.push({ node: result.reason, response: null });
+        }
+      });
+    })
+  );
+
+  return results;
+}
 
 export async function getNodesSummary(
   rmbClient: Client,
